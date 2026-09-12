@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+/* Modo de ubicación de pop-ups: ver bloque PLACEMENT_IDS más abajo. */
+const PLACEMENT_MODE = new URLSearchParams(location.search).get('colocar') === '1';
 
 /* ---------- NAV SCROLL STATE ---------- */
 const nav = document.getElementById('nav');
@@ -246,7 +248,7 @@ const HOTSPOTS = [
   {
     id: 'oficinas',
     title: 'Oficinas administrativas',
-    images: ['assets/oficina-1.jpeg', 'assets/oficina-2.jpeg', 'assets/oficina-3.jpeg', 'assets/oficina-4.jpeg', 'assets/oficina-5.jpeg', 'assets/oficina-6.jpeg', 'assets/oficina-7.jpeg'],
+    images: ['assets/oficina-1.jpeg', 'assets/oficina-2.jpeg', 'assets/oficina-3.jpeg', 'assets/oficina-4.jpeg', 'assets/oficina-5.jpeg', 'assets/oficina-6.jpeg', 'assets/oficina-7.jpeg', 'assets/oficina-8.jpeg', 'assets/oficina-9.jpeg', 'assets/oficina-10.jpeg'],
     caption: 'Oficinas administrativas del Centro de Distribución Nariño.',
     position: [-87.49, 7.00, -9.37],
   },
@@ -280,9 +282,9 @@ const HOTSPOTS = [
   },
   {
     id: 'cuarto-bajas',
-    title: 'Cuarto de bajas',
-    images: ['assets/cuarto-de-bajas.jpeg'],
-    caption: 'Cuarto de producto dado de baja.',
+    title: 'Zona de vertimiento y cuarto de baja',
+    images: ['assets/cuarto-de-bajas.jpeg', 'assets/zona-vertimiento-cuarto-de-bajas.jpeg'],
+    caption: 'Zona de vertimiento y cuarto de producto dado de baja.',
     position: [-42.96, 0.00, 56.49],
   },
   {
@@ -295,7 +297,7 @@ const HOTSPOTS = [
   {
     id: 'reempaque',
     title: 'Reempaque',
-    images: ['assets/reempaque-1.jpg', 'assets/reempaque-2.jpeg', 'assets/reempaque-3.jpeg', 'assets/reempaque-4.jpg'],
+    images: ['assets/reempaque-1.jpg', 'assets/reempaque-2.jpeg', 'assets/reempaque-3.jpeg', 'assets/reempaque-4.jpg', 'assets/reempaque-5.jpeg', 'assets/reempaque-6.jpeg'],
     caption: 'Zona de reempaque de producto.',
     position: [-60.97, 4.10, 57.26],
   },
@@ -305,6 +307,49 @@ const HOTSPOTS = [
     images: ['assets/sorting-1.jpg', 'assets/sorting-2.jpg'],
     caption: 'Zona de sorting y clasificación.',
     position: [94.49, 0.00, 51.49],
+  },
+  /* Puntos de interés nuevos — sin ubicar todavía. Se colocan a mano
+     con el modo de ubicación (ver PLACEMENT_MODE más abajo) y luego
+     se reemplaza el position [0,0,0] por las coordenadas definitivas. */
+  {
+    id: 'marketplace',
+    title: 'Marketplace',
+    images: ['assets/marketplace-1.jpeg', 'assets/marketplace-2.jpeg'],
+    caption: 'Marketplace del Centro de Distribución Nariño.',
+    position: [0, 0, 0],
+    placed: false,
+  },
+  {
+    id: 'parqueadero-t2',
+    title: 'Parqueadero T2',
+    images: ['assets/parqueadero-t2-1.jpeg', 'assets/parqueadero-t2-2.jpeg', 'assets/parqueadero-t2-3.jpeg'],
+    caption: 'Parqueadero T2.',
+    position: [0, 0, 0],
+    placed: false,
+  },
+  {
+    id: 'sendero-parqueadero-t2',
+    title: 'Sendero Parqueadero T2',
+    images: ['assets/sendero-parqueadero-t2-1.jpeg', 'assets/sendero-parqueadero-t2-2.jpeg', 'assets/sendero-parqueadero-t2-3.jpeg'],
+    caption: 'Sendero de acceso al parqueadero T2.',
+    position: [0, 0, 0],
+    placed: false,
+  },
+  {
+    id: 'sendero-taller-montacargas',
+    title: 'Sendero taller montacargas',
+    images: ['assets/sendero-taller-montacargas.jpeg'],
+    caption: 'Sendero hacia el taller de montacargas.',
+    position: [0, 0, 0],
+    placed: false,
+  },
+  {
+    id: 'sendero-entrada',
+    title: 'Sendero entrada',
+    images: ['assets/sendero-entrada-1.jpeg', 'assets/sendero-entrada-2.jpeg'],
+    caption: 'Sendero de entrada al Centro de Distribución.',
+    position: [0, 0, 0],
+    placed: false,
   },
 ];
 
@@ -390,7 +435,10 @@ function resolveSafetyPins() {
 
 function resolveHotspots() {
   if (!hotspotsLayer) return;
-  activeHotspots = HOTSPOTS.map((h) => {
+  /* Los pop-ups nuevos sin ubicar (placed: false) quedan ocultos para
+     visitantes normales; solo se muestran en modo de ubicación. */
+  const visible = PLACEMENT_MODE ? HOTSPOTS : HOTSPOTS.filter((h) => h.placed !== false);
+  activeHotspots = visible.map((h) => {
     const el = document.createElement('button');
     el.type = 'button';
     el.className = 'hotspot-pin';
@@ -645,3 +693,94 @@ const viewerVisibilityObserver = new IntersectionObserver(
   { rootMargin: '600px 0px' }
 );
 viewerVisibilityObserver.observe(frame);
+
+/* ---------- MODO DE UBICACIÓN (solo con ?colocar=1 en la URL) ----------
+   Deja hacer clic sobre el modelo 3D para fijar la posición de los
+   pop-ups nuevos que todavía no tienen coordenadas. Genera el código
+   listo para pegar en HOTSPOTS. No aparece para los visitantes normales. */
+const PLACEMENT_IDS = ['marketplace', 'parqueadero-t2', 'sendero-parqueadero-t2', 'sendero-taller-montacargas', 'sendero-entrada'];
+
+if (PLACEMENT_MODE) {
+  startModelLoad();
+  startRenderLoop();
+
+  const raycaster = new THREE.Raycaster();
+  const pointerNDC = new THREE.Vector2();
+  let placingId = null;
+  let downPos = null;
+
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:9999;background:rgba(20,16,12,0.92);color:#fff;padding:14px;border-radius:10px;font:12px/1.4 monospace;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,0.4);';
+  panel.innerHTML =
+    '<div style="font-weight:bold;margin-bottom:8px;">Modo de ubicación</div>' +
+    '<div id="placement-status" style="margin-bottom:8px;color:#ffd9a0;">Elige un punto y haz clic sobre el modelo.</div>' +
+    '<div id="placement-list" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>' +
+    '<textarea id="placement-code" readonly style="width:100%;height:140px;background:#1a1512;color:#9fe0a0;border:1px solid #443;border-radius:6px;padding:6px;font:11px/1.4 monospace;"></textarea>' +
+    '<button id="placement-copy" type="button" style="margin-top:6px;width:100%;padding:6px;border:0;border-radius:6px;background:#e2341c;color:#fff;font-weight:bold;cursor:pointer;">Copiar código</button>';
+  document.body.appendChild(panel);
+
+  const listEl = panel.querySelector('#placement-list');
+  const statusEl = panel.querySelector('#placement-status');
+  const codeEl = panel.querySelector('#placement-code');
+  const buttons = {};
+
+  PLACEMENT_IDS.forEach((id) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.style.cssText = 'text-align:left;padding:6px 8px;border-radius:6px;border:1px solid #554;background:#2a231c;color:#fff;cursor:pointer;';
+    btn.addEventListener('click', () => {
+      placingId = id;
+      PLACEMENT_IDS.forEach((k) => { buttons[k].style.borderColor = k === id ? '#e2341c' : '#554'; });
+      const h = HOTSPOTS.find((x) => x.id === id);
+      statusEl.textContent = 'Haz clic en el modelo para ubicar: ' + h.title;
+    });
+    buttons[id] = btn;
+    listEl.appendChild(btn);
+  });
+
+  function refreshPanel() {
+    PLACEMENT_IDS.forEach((id) => {
+      const h = HOTSPOTS.find((x) => x.id === id);
+      buttons[id].textContent = (h.placed ? '✓ ' : '○ ') + h.title + (h.placed ? '  [' + h.position.map((n) => n.toFixed(2)).join(', ') + ']' : '');
+    });
+    const snippet = PLACEMENT_IDS.map((id) => {
+      const h = HOTSPOTS.find((x) => x.id === id);
+      return "  { id: '" + h.id + "', position: [" + h.position.map((n) => n.toFixed(2)).join(', ') + '] },';
+    }).join('\n');
+    codeEl.value = snippet;
+  }
+  refreshPanel();
+
+  panel.querySelector('#placement-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(codeEl.value).catch(() => {});
+  });
+
+  function placementPointFromEvent(e) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointerNDC, camera);
+    if (!modelRoot) return null;
+    const hits = raycaster.intersectObject(modelRoot, true);
+    return hits.length ? hits[0].point : null;
+  }
+
+  renderer.domElement.addEventListener('pointerdown', (e) => { downPos = { x: e.clientX, y: e.clientY }; });
+  renderer.domElement.addEventListener('pointerup', (e) => {
+    if (!placingId || !downPos) return;
+    const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+    downPos = null;
+    if (moved > 6) return;
+    const point = placementPointFromEvent(e);
+    if (!point) return;
+    const h = HOTSPOTS.find((x) => x.id === placingId);
+    h.position = [point.x, point.y, point.z];
+    h.placed = true;
+    const entry = activeHotspots.find((x) => x.id === placingId);
+    if (entry) {
+      entry.position.copy(point);
+      projectPinToScreen(entry);
+    }
+    refreshPanel();
+  });
+}
