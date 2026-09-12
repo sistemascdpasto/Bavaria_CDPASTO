@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Distribución Nariño — Bavaria</title>
+<meta name="description" content="Centro de Distribución Nariño de Bavaria. Historia, operación y recorrido 3D interactivo de la bodega en Pasto, Nariño.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="cursor-glow" id="cursor-glow"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand"><span class="dot"></span>CD&nbsp;Nariño</a>
+    <nav class="nav-links">
+      <a href="#aliados">Aliados</a>
+      <a href="#operacion">Operación</a>
+      <a href="#historia">Historia</a>
+      <a href="#layout3d">Layout 3D</a>
+      <a href="#sistemas">Sistemas</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-rack" id="hero-rack" aria-hidden="true"></div>
+  <div class="bubbles" id="bubbles" aria-hidden="true"></div>
+  <div class="hero-top">
+    <div class="hero-content">
+      <p class="hero-kicker">Bavaria · Pasto, Nariño</p>
+      <h1 class="hero-title">
+        <span class="line"><span>Centro de</span></span>
+        <span class="line"><span>Distribución</span></span>
+        <span class="line"><span>Nariño</span></span>
+      </h1>
+      <p class="hero-sub">Desde el suroccidente colombiano, la operación que recibe, almacena y despacha la cerveza y las bebidas de Bavaria para todo el departamento — 24 horas, 7 días a la semana.</p>
+      <div class="hero-actions">
+        <a href="#layout3d" class="btn btn-primary">Recorrer la bodega en 3D</a>
+        <a href="#historia" class="btn btn-ghost">Ver la historia de Bavaria</a>
+      </div>
+    </div>
+    <div class="hero-banner tilt" data-reveal="scale">
+      <img src="assets/cd-narino-banner.png" alt="Bavaria, Adenar S.A.S. y Easy Logística — los aliados del Centro de Distribución Nariño">
+      <span class="hero-banner-caption">Bavaria · Adenar S.A.S. · Easy Logística</span>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num" data-count="23">0</span><span class="label">camiones en flota</span></div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat"><span class="num" data-count="3">0</span><span class="label">montacargas activos</span></div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat"><span class="num" data-count="5">0</span><span class="label">áreas de operación</span></div>
+  </div>
+  <a href="#operacion" class="scroll-cue" aria-label="Bajar a la siguiente sección">
+    <span></span>
+  </a>
+</section>
+
+<!-- ALIADOS (trust bar) -->
+<section class="trust" id="aliados">
+  <p class="trust-label" data-reveal="up">Aliados de la operación</p>
+  <div class="trust-row" data-reveal-group>
+    <div class="trust-card tilt" data-reveal="scale" style="--i:0">
+      <img src="assets/logo1.png" alt="Bavaria">
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-card tilt" data-reveal="scale" style="--i:1">
+      <img src="assets/logo2.png" alt="Adenar S.A.S. — Alianza Distribuidora de Nariño">
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-card tilt" data-reveal="scale" style="--i:2">
+      <img src="assets/logo3.png" alt="Easy Logística">
+    </div>
+  </div>
+  <p class="trust-caption" data-reveal="up">Bavaria, Adenar S.A.S. y Easy Logística sostienen juntos la cadena de distribución del suroccidente del país.</p>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item"><i style="background:var(--red)"></i>Bavaria</span>
+    <span class="ticker-item"><i style="background:var(--green)"></i>Adenar S.A.S.</span>
+    <span class="ticker-item"><i style="background:var(--blue)"></i>Easy Logística</span>
+    <span class="ticker-item"><i style="background:var(--gold)"></i>CD Nariño</span>
+    <span class="ticker-item">Pasto · Nariño</span>
+    <span class="ticker-item"><i style="background:var(--red)"></i>Bavaria</span>
+    <span class="ticker-item"><i style="background:var(--green)"></i>Adenar S.A.S.</span>
+    <span class="ticker-item"><i style="background:var(--blue)"></i>Easy Logística</span>
+    <span class="ticker-item"><i style="background:var(--gold)"></i>CD Nariño</span>
+    <span class="ticker-item">Pasto · Nariño</span>
+  </div>
+</div>
+
+<!-- OPERACION -->
+<section class="operacion" id="operacion">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="operacion-inner">
+    <div class="operacion-copy" data-reveal="left">
+      <p class="eyebrow-mark">01 — La operación</p>
+      <h2>La bodega que <br>mueve a Nariño</h2>
+      <p>El CD Nariño coordina la última milla de Bavaria en el departamento: estibas que entran por el patio de cargue, pasan por el sistema de racks y salen en ruta hacia tiendas, distribuidores y consumidores, sin detenerse.</p>
+      <p>Cada área — almacén, montacargas, camiones, taller mecánico y administración — se mide y se mejora con la metodología 5S, para que un centro de este tamaño funcione con precisión de fábrica.</p>
+    </div>
+    <div class="operacion-areas" data-reveal-group>
+      <div class="area-row" data-reveal="right" style="--i:0"><span class="area-name">Almacén</span><span class="area-line"></span></div>
+      <div class="area-row" data-reveal="right" style="--i:1"><span class="area-name">Montacargas</span><span class="area-line"></span></div>
+      <div class="area-row" data-reveal="right" style="--i:2"><span class="area-name">Camiones</span><span class="area-line"></span></div>
+      <div class="area-row" data-reveal="right" style="--i:3"><span class="area-name">Taller mecánico</span><span class="area-line"></span></div>
+      <div class="area-row" data-reveal="right" style="--i:4"><span class="area-name">Administrativo</span><span class="area-line"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORIA -->
+<section class="historia" id="historia">
+  <div class="historia-glow" aria-hidden="true"></div>
+  <div class="historia-head" data-reveal="up">
+    <p class="eyebrow-mark eyebrow-light">02 — Historia</p>
+    <h2>136 años de<br>cerveza colombiana</h2>
+    <p>De un lote comprado en Bogotá a una marca que se volvió costumbre en el suroccidente del país — el camino que conecta esa historia con la bodega de Nariño.</p>
+  </div>
+
+  <div class="timeline" id="timeline">
+    <svg class="timeline-svg" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="tl-gradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" style="stop-color:var(--red)"/>
+          <stop offset="35%" style="stop-color:var(--gold)"/>
+          <stop offset="70%" style="stop-color:var(--green)"/>
+          <stop offset="100%" style="stop-color:var(--blue)"/>
+        </linearGradient>
+      </defs>
+      <line x1="1" y1="0" x2="1" y2="100%"></line>
+      <line class="fill" x1="1" y1="0" x2="1" y2="100%" pathLength="1000"></line>
+    </svg>
+
+    <div class="tl-item" data-tl>
+      <div class="tl-marker">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-6h6v6"/></svg>
+      </div>
+      <div class="tl-body">
+        <div class="tl-year">1889</div>
+        <h3>Un lote en Bogotá</h3>
+        <p>Leo Kopp, inmigrante alemán, se asocia con los hermanos Castello y adquiere el terreno donde nacería la fábrica de cerveza. Ese registro notarial se reconoce hoy como el acta fundacional de Bavaria.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-tl>
+      <div class="tl-marker">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
+      </div>
+      <div class="tl-body">
+        <div class="tl-year">1891</div>
+        <h3>Un emblema para la fábrica</h3>
+        <p>La compañía registra el águila imperial como imagen de fábrica, el símbolo que desde entonces acompañaría etiquetas, avisos y membretes de la marca.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-tl>
+      <div class="tl-marker">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6M10 2v5l-3 4v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9l-3-4V2"/></svg>
+      </div>
+      <div class="tl-body">
+        <div class="tl-year">1894</div>
+        <h3>Nace la Pilsener</h3>
+        <p>La fábrica lanza su primera cerveza Pilsener, la receta que con los años daría origen a la marca Bavaria tal como la conocemos hoy.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-tl>
+      <div class="tl-marker">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.4 7-12a7 7 0 1 0-14 0c0 4.6 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>
+      </div>
+      <div class="tl-body">
+        <div class="tl-year">1929</div>
+        <h3>Póker conquista el suroccidente</h3>
+        <p>Sale al mercado la cerveza Póker, que se convierte en la marca tradicional del suroccidente colombiano antes de llegar a todo el país — la misma región que hoy atiende el CD Nariño.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-tl>
+      <div class="tl-marker">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/></svg>
+      </div>
+      <div class="tl-body">
+        <div class="tl-year">Hoy</div>
+        <h3>De Bogotá a Pasto</h3>
+        <p>Ya parte de AB InBev, Bavaria distribuye sus marcas en todo el país. En Nariño, esa cadena termina — y empieza de nuevo cada día — en este Centro de Distribución.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAYOUT 3D -->
+<section class="layout3d" id="layout3d">
+  <div class="layout3d-head" data-reveal="up">
+    <p class="eyebrow-mark eyebrow-light">03 — Layout interactivo</p>
+    <h2>La bodega, <br>en tres dimensiones</h2>
+    <p class="layout3d-sub">Modelo real del CD Nariño: patio, cubierta, racks, bloques de producto y flujo de camiones. Arrastra para girar, desplaza para acercar.</p>
+  </div>
+
+  <div class="viewer-frame" data-reveal="scale">
+    <canvas id="viewer-canvas"></canvas>
+    <div class="viewer-loading" id="viewer-loading">
+      <span class="loading-bar"><span class="loading-fill" id="loading-fill"></span></span>
+      <span class="loading-text" id="loading-text">Cargando modelo…</span>
+    </div>
+    <div class="hotspots" id="hotspots" aria-hidden="true"></div>
+    <div class="viewer-hint" id="viewer-hint">
+      <span>Arrastra para girar · rueda para zoom · toca los puntos para ver información</span>
+    </div>
+    <div class="viewer-controls">
+      <button class="vctrl" data-view="general" aria-label="Vista general">General</button>
+      <button class="vctrl" data-view="patio" aria-label="Vista de patio">Patio</button>
+      <button class="vctrl" data-view="bodega" aria-label="Vista de bodega">Bodega</button>
+      <button class="vctrl" data-view="auto" aria-label="Vista automática">Auto-giro</button>
+    </div>
+    <div class="viewer-legend">
+      <span class="legend-item"><i style="background:#57b442"></i>Producto A</span>
+      <span class="legend-item"><i style="background:#f0b429"></i>Producto B</span>
+      <span class="legend-item"><i style="background:#e0611a"></i>Producto C</span>
+      <span class="legend-item"><i style="background:#7c8189"></i>Racks / estructura</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOTSPOT POPUP -->
+<div class="hotspot-modal" id="hotspot-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="hotspot-modal-backdrop" data-close></div>
+  <div class="hotspot-modal-panel">
+    <button class="hotspot-modal-close" data-close aria-label="Cerrar">&times;</button>
+    <div class="hotspot-modal-media">
+      <img id="hotspot-modal-img" alt="">
+      <div class="hotspot-modal-icon" id="hotspot-modal-icon"></div>
+      <div class="hotspot-modal-nav" id="hotspot-modal-nav">
+        <button type="button" id="hotspot-modal-prev" aria-label="Foto anterior">&#8249;</button>
+        <span id="hotspot-modal-counter"></span>
+        <button type="button" id="hotspot-modal-next" aria-label="Foto siguiente">&#8250;</button>
+      </div>
+    </div>
+    <h3 id="hotspot-modal-title"></h3>
+    <p id="hotspot-modal-caption"></p>
+  </div>
+</div>
+
+<!-- SISTEMAS -->
+<section class="sistemas" id="sistemas">
+  <div class="sistemas-head" data-reveal="up">
+    <p class="eyebrow-mark">04 — Sistemas</p>
+    <h2>Herramientas del día a día</h2>
+    <p class="sistemas-sub">Los sistemas internos que el equipo del CD Nariño usa para gestionar la operación, minuto a minuto.</p>
+  </div>
+  <div class="sistemas-grid" data-reveal-group>
+
+    <a class="sistema-card tilt" href="https://sistemagestionadenar.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:0; --accent:var(--green); --accent-ink:var(--green-ink)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+      </span>
+      <span class="sistema-name">Gestión Adenar</span>
+      <span class="sistema-desc">Gestión operativa de Adenar S.A.S.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="sistema-card tilt" href="https://sistemagestioneasy.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:1; --accent:var(--blue); --accent-ink:var(--blue)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V6a1 1 0 0 1 1-1h9v11"/><path d="M13 9h4l3 3v4h-7"/><circle cx="7.5" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>
+      </span>
+      <span class="sistema-name">Gestión Easy</span>
+      <span class="sistema-desc">Gestión logística de Easy Logística.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="sistema-card tilt" href="https://sistematicketscdpasto.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:2; --accent:var(--red); --accent-ink:var(--red)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/><path d="M14 6v12" stroke-dasharray="2.2 2.2"/></svg>
+      </span>
+      <span class="sistema-name">Tickets</span>
+      <span class="sistema-desc">Reporte y seguimiento de tickets de los sistemas del CD.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="sistema-card tilt" href="https://cdpasto5s.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:3; --accent:var(--gold); --accent-ink:var(--gold-ink)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M7 9l1.5 1.5L11 7.5"/><path d="M14 8h4"/><path d="M7 15l1.5 1.5L11 13.5"/><path d="M14 15h4"/></svg>
+      </span>
+      <span class="sistema-name">Programa 5S</span>
+      <span class="sistema-desc">Auditorías y seguimiento del programa 5S.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="sistema-card tilt" href="https://tatsidercdpasto.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:4; --accent:var(--red); --accent-ink:var(--red)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2"/><path d="M9 2h6"/></svg>
+      </span>
+      <span class="sistema-name">TAT Sider</span>
+      <span class="sistema-desc">Seguimiento de tiempos de atención.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <a class="sistema-card tilt" href="https://reempaquecdpasto.up.railway.app" target="_blank" rel="noopener" data-reveal="up" style="--i:5; --accent:var(--gold); --accent-ink:var(--gold-ink)">
+      <span class="sistema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+      </span>
+      <span class="sistema-name">Reempaque</span>
+      <span class="sistema-desc">Control del proceso de reempaque.</span>
+      <span class="sistema-link">Abrir sistema <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+  </div>
+</section>
+
+<div class="spectrum-rule"></div>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="contacto">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="footer-mark">CD Nariño</span>
+      <span class="footer-tag">Bavaria · Pasto, Nariño, Colombia</span>
+    </div>
+    <div class="footer-links">
+      <a href="#top">Inicio</a>
+      <a href="#aliados">Aliados</a>
+      <a href="#operacion">Operación</a>
+      <a href="#historia">Historia</a>
+      <a href="#layout3d">Layout 3D</a>
+      <a href="#sistemas">Sistemas</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Centro de Distribución Nariño — Bavaria.</span>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+    "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm",
+    "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger/+esm"
+  }
+}
+</script>
+<script type="module" src="main.js"></script>
+</body>
+</html>
