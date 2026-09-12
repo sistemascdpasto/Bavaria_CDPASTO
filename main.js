@@ -316,8 +316,7 @@ const HOTSPOTS = [
     title: 'Marketplace',
     images: ['assets/marketplace-1.jpeg', 'assets/marketplace-2.jpeg'],
     caption: 'Marketplace del Centro de Distribución Nariño.',
-    position: [0, 0, 0],
-    placed: false,
+    position: [40.01, 11.03, -33.47],
   },
   {
     id: 'parqueadero-t2',
