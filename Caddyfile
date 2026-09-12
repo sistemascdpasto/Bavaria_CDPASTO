@@ -45,7 +45,7 @@
 	# HTML/CSS/JS del sitio: sin nombre de archivo con hash, así que
 	# siempre revalidar (rápido, vía ETag) para no servir código viejo.
 	@appshell {
-		path *.html /main.js /style.css
+		path / *.html /main.js /style.css
 	}
 	header @appshell Cache-Control "no-cache"
 
