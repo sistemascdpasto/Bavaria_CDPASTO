@@ -495,61 +495,66 @@ function computeView(box, angle = { az: 0.9, el: 0.55 }, distanceScale = 1.35) {
 let views = {};
 
 const loader = new GLTFLoader();
-loader.load(
-  'assets/layout-cd-narino.glb',
-  (gltf) => {
-    modelRoot = gltf.scene;
+let modelLoadStarted = false;
+function startModelLoad() {
+  if (modelLoadStarted) return;
+  modelLoadStarted = true;
+  loader.load(
+    'assets/layout-cd-narino.glb',
+    (gltf) => {
+      modelRoot = gltf.scene;
 
-    modelRoot.traverse((o) => {
-      if (o.isMesh) {
-        o.frustumCulled = true;
-        if (o.material) o.material.side = THREE.FrontSide;
+      modelRoot.traverse((o) => {
+        if (o.isMesh) {
+          o.frustumCulled = true;
+          if (o.material) o.material.side = THREE.FrontSide;
+        }
+      });
+
+      scene.add(modelRoot);
+
+      const fullBox = new THREE.Box3().setFromObject(modelRoot);
+
+      const terreno = findNode(modelRoot, 'terreno') || findNode(modelRoot, 'sitio');
+      const bodegaA = findNode(modelRoot, 'cubierta_bodega');
+      const bodegaB = findNode(modelRoot, 'almacenamiento_bodega');
+
+      const patioBox = terreno ? new THREE.Box3().setFromObject(terreno) : fullBox;
+      let bodegaBox = null;
+      if (bodegaA || bodegaB) {
+        bodegaBox = new THREE.Box3();
+        if (bodegaA) bodegaBox.expandByObject(bodegaA);
+        if (bodegaB) bodegaBox.expandByObject(bodegaB);
+      } else {
+        bodegaBox = fullBox;
       }
-    });
 
-    scene.add(modelRoot);
+      views = {
+        general: computeView(fullBox, { az: 0.78, el: 0.58 }, 2.05),
+        patio: computeView(patioBox, { az: 1.35, el: 0.42 }, 1.3),
+        bodega: computeView(bodegaBox, { az: 0.35, el: 0.5 }, 1.4),
+      };
 
-    const fullBox = new THREE.Box3().setFromObject(modelRoot);
+      applyView(views.general, true);
+      resolveHotspots();
+      resolveSafetyPins();
 
-    const terreno = findNode(modelRoot, 'terreno') || findNode(modelRoot, 'sitio');
-    const bodegaA = findNode(modelRoot, 'cubierta_bodega');
-    const bodegaB = findNode(modelRoot, 'almacenamiento_bodega');
-
-    const patioBox = terreno ? new THREE.Box3().setFromObject(terreno) : fullBox;
-    let bodegaBox = null;
-    if (bodegaA || bodegaB) {
-      bodegaBox = new THREE.Box3();
-      if (bodegaA) bodegaBox.expandByObject(bodegaA);
-      if (bodegaB) bodegaBox.expandByObject(bodegaB);
-    } else {
-      bodegaBox = fullBox;
+      loadingFill.style.width = '100%';
+      setTimeout(() => loadingEl.classList.add('hidden'), 250);
+    },
+    (xhr) => {
+      if (xhr.total) {
+        const pct = Math.min(100, Math.round((xhr.loaded / xhr.total) * 100));
+        loadingFill.style.width = pct + '%';
+        loadingText.textContent = 'Cargando modelo… ' + pct + '%';
+      }
+    },
+    (err) => {
+      loadingText.textContent = 'No se pudo cargar el modelo 3D.';
+      console.error(err);
     }
-
-    views = {
-      general: computeView(fullBox, { az: 0.78, el: 0.58 }, 2.05),
-      patio: computeView(patioBox, { az: 1.35, el: 0.42 }, 1.3),
-      bodega: computeView(bodegaBox, { az: 0.35, el: 0.5 }, 1.4),
-    };
-
-    applyView(views.general, true);
-    resolveHotspots();
-    resolveSafetyPins();
-
-    loadingFill.style.width = '100%';
-    setTimeout(() => loadingEl.classList.add('hidden'), 250);
-  },
-  (xhr) => {
-    if (xhr.total) {
-      const pct = Math.min(100, Math.round((xhr.loaded / xhr.total) * 100));
-      loadingFill.style.width = pct + '%';
-      loadingText.textContent = 'Cargando modelo… ' + pct + '%';
-    }
-  },
-  (err) => {
-    loadingText.textContent = 'No se pudo cargar el modelo 3D.';
-    console.error(err);
-  }
-);
+  );
+}
 
 function applyView(view, instant = false) {
   if (!view) return;
@@ -606,10 +611,37 @@ const ro = new ResizeObserver(() => sizeRenderer());
 ro.observe(frame);
 sizeRenderer();
 
+let rafId = null;
 function animate() {
-  requestAnimationFrame(animate);
+  rafId = requestAnimationFrame(animate);
   controls.update();
   updateHotspots();
   renderer.render(scene, camera);
 }
-animate();
+function startRenderLoop() {
+  if (rafId === null) animate();
+}
+function stopRenderLoop() {
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+/* Diferir la carga del modelo (5+MB) y el render loop hasta que el
+   visor esté por entrar en pantalla, en vez de arrancar ambos de una
+   vez al cargar la página. */
+const viewerVisibilityObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        startModelLoad();
+        startRenderLoop();
+      } else {
+        stopRenderLoop();
+      }
+    });
+  },
+  { rootMargin: '600px 0px' }
+);
+viewerVisibilityObserver.observe(frame);
