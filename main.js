@@ -266,6 +266,8 @@ const SAFETY_PIN_DEFAULTS = [
   { type: 'zona-segura-conductores', position: [63.63, 0.08, -7.38] },
   { type: 'zona-segura-conductores', position: [-37.26, 0.08, 1.34] },
   { type: 'zona-llaves', position: [-9.58, 1.87, 2.00] },
+  { type: 'flecha-derecha', position: [-7.88, 0.00, 27.14] },
+  { type: 'flecha-izquierda', position: [-7.60, 0.00, 16.74] },
 ];
 
 /* Puntos de interés sobre el modelo — posiciones fijas calculadas a partir
