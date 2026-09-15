@@ -211,6 +211,36 @@ const SAFETY_CATEGORIES = {
     info: 'Zona de peligro con riesgos identificados. Manténgase alerta, use los elementos de protección personal requeridos y siga la señalización del sector.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5H2.5L12 3.5z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>',
   },
+  'zona-segura-conductores': {
+    label: 'Zona segura conductores',
+    color: '#2e9e94',
+    info: 'Zona segura para conductores. Punto de espera y descanso designado para los conductores dentro del Centro de Distribución.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+  },
+  'zona-llaves': {
+    label: 'Zona de llaves',
+    color: '#c98a1d',
+    info: 'Zona de llaves. Punto de almacenamiento de llaves de vehículos y equipos.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M21 2l-9.6 9.6"/><path d="M15 8l3 3"/><path d="M18 5l2.5 2.5"/></svg>',
+  },
+  'control-llaves': {
+    label: 'Control de llaves',
+    color: '#8a5a2b',
+    info: 'Control de llaves. Punto de registro y control de entrega y recepción de llaves.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M8.5 12.5l2 2 4.5-4.5"/></svg>',
+  },
+  'flecha-izquierda': {
+    label: 'Flujo vehicular ←',
+    color: 'var(--blue)',
+    info: 'Sentido de circulación vehicular hacia la izquierda.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>',
+  },
+  'flecha-derecha': {
+    label: 'Flujo vehicular →',
+    color: 'var(--blue)',
+    info: 'Sentido de circulación vehicular hacia la derecha.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>',
+  },
 };
 
 /* Posiciones definitivas de la señalización de seguridad sobre el modelo. */
@@ -694,6 +724,10 @@ viewerVisibilityObserver.observe(frame);
    pop-ups nuevos que todavía no tienen coordenadas. Genera el código
    listo para pegar en HOTSPOTS. No aparece para los visitantes normales. */
 const PLACEMENT_IDS = ['marketplace', 'parqueadero-t2', 'sendero-parqueadero-t2', 'sendero-taller-montacargas', 'sendero-entrada'];
+/* Señalización de conteo libre: se puede agregar cuantos puntos se
+   quiera de cada tipo, a diferencia de los pop-ups de arriba (un
+   punto fijo cada uno). */
+const PLACEMENT_SAFETY_TYPES = ['zona-segura-conductores', 'zona-llaves', 'control-llaves', 'flecha-izquierda', 'flecha-derecha'];
 
 if (PLACEMENT_MODE) {
   startModelLoad();
@@ -702,16 +736,24 @@ if (PLACEMENT_MODE) {
   const raycaster = new THREE.Raycaster();
   const pointerNDC = new THREE.Vector2();
   let placingId = null;
+  let armedSafetyType = null;
   let downPos = null;
+  const addedSafety = [];
 
   const panel = document.createElement('div');
-  panel.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:9999;background:rgba(20,16,12,0.92);color:#fff;padding:14px;border-radius:10px;font:12px/1.4 monospace;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,0.4);';
+  panel.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:9999;background:rgba(20,16,12,0.92);color:#fff;padding:14px;border-radius:10px;font:12px/1.4 monospace;max-width:360px;max-height:88vh;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4);';
   panel.innerHTML =
     '<div style="font-weight:bold;margin-bottom:8px;">Modo de ubicación</div>' +
     '<div id="placement-status" style="margin-bottom:8px;color:#ffd9a0;">Elige un punto y haz clic sobre el modelo.</div>' +
     '<div id="placement-list" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>' +
-    '<textarea id="placement-code" readonly style="width:100%;height:140px;background:#1a1512;color:#9fe0a0;border:1px solid #443;border-radius:6px;padding:6px;font:11px/1.4 monospace;"></textarea>' +
-    '<button id="placement-copy" type="button" style="margin-top:6px;width:100%;padding:6px;border:0;border-radius:6px;background:#e2341c;color:#fff;font-weight:bold;cursor:pointer;">Copiar código</button>';
+    '<textarea id="placement-code" readonly style="width:100%;height:100px;background:#1a1512;color:#9fe0a0;border:1px solid #443;border-radius:6px;padding:6px;font:11px/1.4 monospace;"></textarea>' +
+    '<button id="placement-copy" type="button" style="margin-top:6px;width:100%;padding:6px;border:0;border-radius:6px;background:#e2341c;color:#fff;font-weight:bold;cursor:pointer;">Copiar código de pop-ups</button>' +
+    '<div style="font-weight:bold;margin:14px 0 8px;border-top:1px solid #443;padding-top:10px;">Señalización nueva (clics ilimitados)</div>' +
+    '<div id="safety-list" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>' +
+    '<div style="color:#ffd9a0;margin-bottom:6px;">Agregados: <span id="safety-count">0</span></div>' +
+    '<button id="safety-undo" type="button" style="width:100%;padding:6px;border:1px solid #554;border-radius:6px;background:#2a231c;color:#fff;cursor:pointer;margin-bottom:6px;">Quitar el último</button>' +
+    '<textarea id="safety-code" readonly style="width:100%;height:100px;background:#1a1512;color:#9fe0a0;border:1px solid #443;border-radius:6px;padding:6px;font:11px/1.4 monospace;"></textarea>' +
+    '<button id="safety-copy" type="button" style="margin-top:6px;width:100%;padding:6px;border:0;border-radius:6px;background:#e2341c;color:#fff;font-weight:bold;cursor:pointer;">Copiar código de señalización</button>';
   document.body.appendChild(panel);
 
   const listEl = panel.querySelector('#placement-list');
@@ -725,6 +767,8 @@ if (PLACEMENT_MODE) {
     btn.style.cssText = 'text-align:left;padding:6px 8px;border-radius:6px;border:1px solid #554;background:#2a231c;color:#fff;cursor:pointer;';
     btn.addEventListener('click', () => {
       placingId = id;
+      armedSafetyType = null;
+      safetyButtons.forEach((b) => { b.style.borderColor = '#554'; });
       PLACEMENT_IDS.forEach((k) => { buttons[k].style.borderColor = k === id ? '#e2341c' : '#554'; });
       const h = HOTSPOTS.find((x) => x.id === id);
       statusEl.textContent = 'Haz clic en el modelo para ubicar: ' + h.title;
@@ -736,7 +780,8 @@ if (PLACEMENT_MODE) {
   function refreshPanel() {
     PLACEMENT_IDS.forEach((id) => {
       const h = HOTSPOTS.find((x) => x.id === id);
-      buttons[id].textContent = (h.placed ? '✓ ' : '○ ') + h.title + (h.placed ? '  [' + h.position.map((n) => n.toFixed(2)).join(', ') + ']' : '');
+      const isPlaced = h.placed !== false;
+      buttons[id].textContent = (isPlaced ? '✓ ' : '○ ') + h.title + (isPlaced ? '  [' + h.position.map((n) => n.toFixed(2)).join(', ') + ']' : '');
     });
     const snippet = PLACEMENT_IDS.map((id) => {
       const h = HOTSPOTS.find((x) => x.id === id);
@@ -748,6 +793,49 @@ if (PLACEMENT_MODE) {
 
   panel.querySelector('#placement-copy').addEventListener('click', () => {
     navigator.clipboard.writeText(codeEl.value).catch(() => {});
+  });
+
+  /* ---- sección de señalización de conteo libre ---- */
+  const safetyListEl = panel.querySelector('#safety-list');
+  const safetyCountEl = panel.querySelector('#safety-count');
+  const safetyCodeEl = panel.querySelector('#safety-code');
+  const safetyButtons = [];
+
+  PLACEMENT_SAFETY_TYPES.forEach((type) => {
+    const cat = SAFETY_CATEGORIES[type];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = cat.label;
+    btn.style.cssText = 'text-align:left;padding:6px 8px;border-radius:6px;border:1px solid #554;background:#2a231c;color:#fff;cursor:pointer;';
+    btn.addEventListener('click', () => {
+      armedSafetyType = type;
+      placingId = null;
+      PLACEMENT_IDS.forEach((k) => { buttons[k].style.borderColor = '#554'; });
+      safetyButtons.forEach((b) => { b.style.borderColor = b === btn ? '#e2341c' : '#554'; });
+      statusEl.textContent = 'Haz clic en el modelo para agregar: ' + cat.label + ' (puedes hacer clic varias veces)';
+    });
+    safetyButtons.push(btn);
+    safetyListEl.appendChild(btn);
+  });
+
+  function refreshSafetyPanel() {
+    safetyCountEl.textContent = String(addedSafety.length);
+    safetyCodeEl.value = addedSafety
+      .map((p) => "  { type: '" + p.type + "', position: [" + p.position.map((n) => n.toFixed(2)).join(', ') + '] },')
+      .join('\n');
+  }
+
+  panel.querySelector('#safety-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(safetyCodeEl.value).catch(() => {});
+  });
+
+  panel.querySelector('#safety-undo').addEventListener('click', () => {
+    const last = addedSafety.pop();
+    if (!last) return;
+    const idx = safetyPins.indexOf(last.entry);
+    if (idx !== -1) safetyPins.splice(idx, 1);
+    last.entry.el.remove();
+    refreshSafetyPanel();
   });
 
   function placementPointFromEvent(e) {
@@ -762,12 +850,23 @@ if (PLACEMENT_MODE) {
 
   renderer.domElement.addEventListener('pointerdown', (e) => { downPos = { x: e.clientX, y: e.clientY }; });
   renderer.domElement.addEventListener('pointerup', (e) => {
-    if (!placingId || !downPos) return;
+    if ((!placingId && !armedSafetyType) || !downPos) return;
     const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
     downPos = null;
     if (moved > 6) return;
     const point = placementPointFromEvent(e);
     if (!point) return;
+
+    if (armedSafetyType) {
+      const entry = createSafetyPinInstance(armedSafetyType, [point.x, point.y, point.z]);
+      if (entry) {
+        projectPinToScreen(entry);
+        addedSafety.push({ type: armedSafetyType, position: [point.x, point.y, point.z], entry });
+        refreshSafetyPanel();
+      }
+      return;
+    }
+
     const h = HOTSPOTS.find((x) => x.id === placingId);
     h.position = [point.x, point.y, point.z];
     h.placed = true;
