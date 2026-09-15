@@ -230,15 +230,15 @@ const SAFETY_CATEGORIES = {
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M8.5 12.5l2 2 4.5-4.5"/></svg>',
   },
   'flecha-izquierda': {
-    label: 'Flujo vehicular ←',
+    label: 'Flujo vehicular — carril izquierdo',
     color: 'var(--blue)',
-    info: 'Sentido de circulación vehicular hacia la izquierda.',
+    info: 'Flujo vehicular del carril izquierdo.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>',
   },
   'flecha-derecha': {
-    label: 'Flujo vehicular →',
+    label: 'Flujo vehicular — carril derecho',
     color: 'var(--blue)',
-    info: 'Sentido de circulación vehicular hacia la derecha.',
+    info: 'Flujo vehicular del carril derecho.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>',
   },
 };
@@ -263,6 +263,9 @@ const SAFETY_PIN_DEFAULTS = [
   { type: 'peligro', position: [-36.55, 0.00, 36.36] },
   { type: 'peligro', position: [-8.84, 0.00, 37.58] },
   { type: 'peligro', position: [28.22, 0.00, 37.62] },
+  { type: 'zona-segura-conductores', position: [63.63, 0.08, -7.38] },
+  { type: 'zona-segura-conductores', position: [-37.26, 0.08, 1.34] },
+  { type: 'zona-llaves', position: [-9.58, 1.87, 2.00] },
 ];
 
 /* Puntos de interés sobre el modelo — posiciones fijas calculadas a partir
